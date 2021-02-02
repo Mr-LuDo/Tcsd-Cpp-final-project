@@ -10,6 +10,7 @@
 using namespace std;
 
 void Clear();
+void GoDown();
 
 
 int main () {
@@ -29,7 +30,7 @@ int main () {
 
     cout << "min(m2) = " << min(m2) << endl;
 
-
+    GoDown();
     // min() returns the minimal value in the matrix.
     if (min(m1) < min(m3))
         cout << "Min value of m3(" << min(m3) << ") is bigger than min value of m1(" << min(m1) << ")" << endl;
@@ -102,13 +103,14 @@ int main () {
     mv2(1,1) = 2;
     mv2(2,2) = 6;
     mv2(2,0) = 7;
-    for(auto &it_mv2_1 : mv2){
-        for(auto &it_mv2_2 : it_mv2_1){
-            cout << "mv2: " << it_mv2_2 << " at -> " << &it_mv2_2 << endl;
-        }
-    }
-/*    for(auto &it2_5 : mv1){
-        cout << it2_5 << " at -> " << &(it2_5) << endl;
+
+//    for(auto &it_mv2_1 : mv2){
+//        for(auto &it_mv2_2 : it_mv2_1){
+//            cout << "mv2: " << it_mv2_2 << " at -> " << &it_mv2_2 << endl;
+//        }
+//    }
+    for(auto& it2_5 : mv1){
+        cout << &it2_5 << " at -> " << &(it2_5) << endl;
     }
 
 
@@ -116,7 +118,7 @@ int main () {
     Matrix<int, 3, 3> m6(4);
     cout << "m6 : " << m6 << "at -> " << &(m6) << endl;
 
-*/
+
 
 
 //    Matrix<int, 3,3> mv3 = mv2 + mv1;
@@ -153,10 +155,10 @@ int main () {
 
     cout << "m1 = " << m1 << " before deleting at -> " << &(m1) << endl;
 
-    for(auto &it_m1 : m1){
+/*    for(auto &it_m1 : m1){
         cout << "m1 = " << &it_m1 << " at -> " << &(it_m1) << endl;
     }
-    for(auto &it_m2 : m2){
+ */   for(auto &it_m2 : m2){
         cout << "m2 = " << &it_m2 << " at -> " << &(it_m2) << endl;
       //  &it_m2 = 45;
     }
@@ -208,17 +210,21 @@ int main () {
     Matrix<int, 3, 3> m5(3);
     m5 = 2 * m4;
     cout << m5 << endl;
-    Matrix<int, 3, 3> m6(m4);
-    cout << m6 << endl;
+    Matrix<int, 3, 3> m7(m4);
+    cout << m7 << endl;
     m5 += m4;
     cout << m5 << endl;
 
-    if (m6 != m5)
-      cout << "m6 != m5" << endl;
+    if (m7 != m5)
+      cout << "m7 != m5" << endl;
 
-    Matrix<Matrix<int, 3, 2>, 4, 4> composite(m1); // Creates matrix, where each element is m1;
+    Matrix<Matrix<int, 3, 3>, 4, 4> composite(m5); // Creates matrix, where each element is m1;
 
+    GoDown();
+    cout << "this is m1: " << m5 << endl;
+    cout << "----------------------------------------" << endl;
     cout << composite;
+    GoDown();
 
 
     unique_ptr<Matrix<int, 3, 3>> symetric_matrix(new Symetric_Matrix<int, 3>(5)); // SymetricMatrix matrix 3*3 with default element equals to 5;
@@ -230,7 +236,8 @@ int main () {
     cout << (*symetric_matrix)[1][2] << " " << (*symetric_matrix)[2][1] << endl;; // Should print "8 8"
 
 //------------------------------------ testing stuff ----------------------------------------------------
-    Clear();
+    //Clear();
+    GoDown();
 
     Matrix<int, 3, 3> tm1(5);
     cout << "this is tm1: " << tm1 << endl;
@@ -245,15 +252,79 @@ int main () {
     }
 
 
+    cout << "tm1[1] print :" << endl;
+    tm1(1,0) = 1;
+    tm1(1,1) = 2;
+    tm1(1,2) = 3;
+    for(auto& it : tm1[1]) {
+        cout << "tm1[1][it] print :" << it << endl;
+    }
+
+//--------------------------------------- end  ----------------------------------------------------
+    GoDown();
+
+    cout << "tm1[1] print :" << endl;
+    tm1(1,0) = 1;
+    tm1(1,1) = 2;
+    tm1(1,2) = 3;
+    tm1(0) = {7,8,9};
+    cout << "this is tm1: " << tm1 << endl;
+
+    for(auto& it : tm1(1)) {
+        cout << "tm1[1][it] print :" << it << " at address: " << &it << endl;
+    }
+
+
+    for(auto& it : tm1) {
+        cout << "tm1[it] print :" << it << " at address: " << &it << endl;
+    }
 
 
 
 //--------------------------------------- end  ----------------------------------------------------
 
 
+//--------------------------------------- end  ----------------------------------------------------
+    GoDown();
+
+    Matrix<int, 3, 3> tm3(5);
+    cout << "tm3[1] print :" << endl;
+    tm3(1,0) = 1;
+    tm3(1,1) = 2;
+    tm3(1,2) = 3;
+    tm3(0) = {7,8,9};
+    cout << "this is tm3: " << tm3 << endl;
+
+    for(auto& it : tm3(0)) {
+        cout << "tm3[1][it] print :" << it << " at address: " << &it << endl;
+    }
+/*
+    for(typename Matrix<int,3,3>::Iterator it = tm3.begin(); it != tm3.end(); it++) {
+        cout << "tm3[it] print :" << *it << " at address: " << &it << endl;
+    }
+*/
+    for(auto& it : tm3) {
+        cout << "tm3[it] print :" << it << " at address: " << &it << endl;
+    }
+
+//--------------------------------------- end  ----------------------------------------------------
+
     return 0;
 }
 
+
+
+
+
+
+
+
+
+void GoDown()
+{
+    for(int i = 0; i < 10; ++i)
+        cout << endl;
+}
 
 void Clear()
 {
