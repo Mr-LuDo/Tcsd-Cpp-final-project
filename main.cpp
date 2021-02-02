@@ -4,8 +4,13 @@
 #include "symetric_matrix.h"
 #include <iterator>
 #include <vector>
+//#include <stdlib.h>
+
 
 using namespace std;
+
+void Clear();
+
 
 int main () {
     const Matrix<int, 3, 2> m1(7); // Creates 3*2 matrix, with all the default elements set to 0;
@@ -161,14 +166,15 @@ int main () {
     m2 = move(m8);
     cout << "new m2 after changes&&: " << m2 << "old m8 after deletion: " << endl << m8 << endl;
 
-//    try { delete &m1;
-//         cout << "m1 after deleted: " << m1 << endl;
+//    try {
+//        delete &m1;
+        //cout << "m1 after deleted: " << m1 << endl;
 //    }
 //    catch(const std::exception& e) { cerr << e.what() << endl; }
-    cout << "new m2 after changes&&: " << m2 << "old m8 after deletion: " << endl << m8 << endl;
 
-
-
+//    cout << "this is m1" << m1 << endl;
+//    const Matrix<int, 3, 2> m1(7); // Creates 3*2 matrix, with all the default elements set to 0;
+//    cout << "this is m1" << m1 << endl;
 
 
 
@@ -223,7 +229,41 @@ int main () {
     cout << (*symetric_matrix)(1, 2) << " " << (*symetric_matrix)(2, 1) << endl;; // Should print "8 8"
     cout << (*symetric_matrix)[1][2] << " " << (*symetric_matrix)[2][1] << endl;; // Should print "8 8"
 
+//------------------------------------ testing stuff ----------------------------------------------------
+    Clear();
+
+    Matrix<int, 3, 3> tm1(5);
+    cout << "this is tm1: " << tm1 << endl;
+    cout << "tm1[1].size() :" << tm1[1].size() << endl;
+
+    cout << "tm1[1] print :" << endl;
+    tm1(1,0) = 1;
+    tm1(1,1) = 2;
+    tm1(1,2) = 3;
+    for(auto& it : tm1[1]) {
+        cout << "tm1[1][it] print :" << it << endl;
+    }
+
+
+
+
+
+//--------------------------------------- end  ----------------------------------------------------
 
 
     return 0;
+}
+
+
+void Clear()
+{
+#if defined _WIN32
+    system("cls");
+    //clrscr(); // including header file : conio.h
+#elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+    system("clear");
+    //std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences
+#elif defined (__APPLE__)
+    system("clear");
+#endif
 }

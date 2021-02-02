@@ -20,8 +20,10 @@ class Matrix
 
         virtual ~Matrix() = default; //{ cout << "destructor Matrix" << endl << *this << endl; }//{ for(auto &it : *this) { /*delete[] &(it); } delete &row_;  delete &col_; }//= default; // { cout << "destructor" << endl; }
 
-        Matrix<Type, row, column>& operator =(const Matrix& other) { /*row_= other.row_; col_= other.col_;*/ matrix_= other.matrix_; return *this; }
-        Matrix<Type, row, column>& operator =(const Matrix&& other) {cout<< " assign  =&&" << endl; return *this = (other); }
+// ---------------------------------------------- basic operators  ---------------------------------------------------------
+
+        Matrix<Type, row, column>& operator =(const Matrix& other) { matrix_= other.matrix_; return *this; }
+        Matrix<Type, row, column>& operator =(const Matrix&& other) { cout<< " assign  =&&" << endl; return *this = (other); }
 
         bool operator ==(const Matrix& other) const { return (&this->matrix_ == &other.matrix_) && (row_ == other.row_) && (col_ == other.col_); }
         bool operator !=(const Matrix& other) const { return !(*this == other); }
@@ -30,28 +32,23 @@ class Matrix
         Matrix<Type, row, column>& operator -=(const Matrix<Type, row, column>& other);
         Matrix<Type, row, column>& operator *=(const Matrix<Type, row, column>& other);
 
+// --------------------------------- basic functions and overloading operators  ---------------------------------------------------------
 
         vector<Type>& operator [](int pos) { return matrix_[pos]; }
         const vector<Type>& operator[](int pos) const { return matrix_[pos]; }
-
-//        Type& getValue(size_t i, size_t j) { return matrix_.at(i).at(j); }
-//        const Type& getValue(size_t i, size_t j) const { return matrix_.at(i).at(j); }
 
         Type& operator ()(size_t i, size_t j)  { return matrix_.at(i).at(j); }
         const Type& operator ()(size_t i, size_t j) const { return matrix_.at(i).at(j); }
 
         Type avg() const;
-//        vector<Type>& get_vector () { return vec_; }
 
-        //working for vector<Type>
-//        typename vector<Type>::iterator begin() { cout << vec_[0] << " begin() at -> " << &vec_[0] << endl; return vec_.begin(); }
-//        typename vector<Type>::iterator end() { cout << vec_[row_-1] << " end() at -> " << &vec_[row_-1] << endl;  return vec_.end(); }
+// ------------------------------------------------- iterators -------------------------------------------------------------------------------
 
-        //ongoing for matrix<Type>
-        typename vector<vector<Type>>::iterator begin() {
+         typename vector<vector<Type>>::iterator begin() {
             cout << (&matrix_) << " begin() at -> " << &matrix_ << endl;
             return matrix_.begin();
         }
+
         const typename vector<vector<Type>>::const_iterator begin() const {
             cout << (*this)(0,0) << " const_begin() at -> " << &(*this)(0,0) << endl;
             return matrix_.begin();
@@ -113,7 +110,7 @@ Matrix<Type, row, column>& Matrix<Type, row, column>::operator *=(const Matrix<T
 
 template <typename Type, int row, int column>
 std::ostream& operator <<(std::ostream& os, const Matrix<Type, row, column>& mat) {
-    os << "this is matix (vector<vector<Type>>) = " << endl;
+    os << endl << "matrix operator << this is matix (vector<vector<Type>>) = " << endl;
     for(int i = 0; i < row; ++i) {
         for(int j = 0; j < column; ++j) {
             os << mat(i,j) << " ";
@@ -155,9 +152,8 @@ Type min(const Matrix<Type, row, column>& mat) {
     return temp_min;
 }
 
-
 template <typename Type, int row, int column>
-Type Matrix<Type, row, column> ::avg() const {
+Type Matrix<Type, row, column> :: avg() const {
     Type temp_average = 0;
     int count = 0;
     for(int i = 0; i < row; ++i) {
@@ -184,7 +180,7 @@ Matrix<Type, row, column> operator -(const Matrix<Type, row, column>& mat1, cons
 template <typename Type, int row1, int row2, int column1, int column2>
 Matrix<Type, row1, column2> operator *(const Matrix<Type, row1, column1>& mat1, const Matrix<Type, row2, column2>& mat2) {
     if(column1 != row2) throw std::exception();
-//    cout << "operator* -> cal num * mat : " << endl;
+    cout << "operator* -> cal num * mat : " << endl;
 
     Matrix<Type, row1, column2> temp_mat;
 
