@@ -10,7 +10,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-template <typename Type = int, int row = 0, int column = 0>
+template <typename Type = int, int row = 1, int column = 1>
 class Matrix
 {
     public:
@@ -34,16 +34,19 @@ class Matrix
 
 // --------------------------------- basic functions and overloading operators  ---------------------------------------------------------
 
-        vector<Type>& operator [](int pos) { return matrix_[pos]; }
-        const vector<Type>& operator[](int pos) const { return matrix_[pos]; }
+        vector<Type>& operator [](int index) { return matrix_[index]; }
+        const vector<Type>& operator[](int index) const { return matrix_[index]; }
+
+        vector<Type>& operator ()(size_t index)  { return matrix_.at(index); }
+        const vector<Type>& operator ()(size_t index) const { return matrix_.at(index); }
 
         Type& operator ()(size_t i, size_t j)  { return matrix_.at(i).at(j); }
         const Type& operator ()(size_t i, size_t j) const { return matrix_.at(i).at(j); }
 
         Type avg() const;
 
-// ------------------------------------------------- iterators -------------------------------------------------------------------------------
-
+// ------------------------------------------------- iterators old -------------------------------------------------------------------------------
+/*
          typename vector<vector<Type>>::iterator begin() {
             cout << (&matrix_) << " begin() at -> " << &matrix_ << endl;
             return matrix_.begin();
@@ -63,6 +66,103 @@ class Matrix
              return matrix_.end();
         }
 
+// ------------------------------------------------- iterators new 1 -------------------------------------------------------------------------------
+        class Iterator {
+            public:
+                Iterator(Matrix& ref, int index) : ref_(ref), index_(index) {}
+                bool operator==(const Iterator& other) { return (&ref_ == &other.ref_) && (index_ == other.index_); }
+                bool operator!=(const Iterator& other) { return !(*this == other); }
+                Iterator& operator++(int) {
+                    index_++;
+                    return *this;
+                }
+                vector<Type>& operator*() { return ref_(index_); }
+
+            private:
+                Matrix& ref_;
+                int index_;
+        };
+
+         Iterator begin() {
+            cout << (&matrix_) << " begin() at -> " << &matrix_ << endl;
+            return Iterator(*this, 0); //matrix_.begin();
+        }
+
+        Iterator end() {
+            cout << &matrix_[row_-1] << " end() at -> " << &matrix_[row_-1] << endl;
+            return Iterator(*this, row_);  //matrix_.end();
+        }
+
+*/
+// ------------------------------------------------- iterators new 2 -------------------------------------------------------------------------------
+        class Iterator {
+            public:
+                Iterator(Matrix& ref, bool is_end) : ref_(ref), row_index_(is_end? row-1 : 0), col_index_(is_end? column: 0), row_(row),  col_(column) {}
+                bool operator==(const Iterator& other) { return (&ref_ == &other.ref_) && (row_index_ == other.row_index_) && (col_index_ == other.col_index_); }
+                bool operator!=(const Iterator& other) { return !(*this == other); }
+
+                Iterator& operator++(int) {
+                    if(row_index_ <  row_-1 && col_index_ < col_-1)  { col_index_++; return *this; }
+                    if(row_index_ <  row_-1 && col_index_ == col_-1) { col_index_ = 0; row_index_++; return *this; }
+                    col_index_++;
+                    return *this;
+                }
+                Iterator& operator++() { return (*this)++; }
+                Type& operator*() { return ref_(row_index_, col_index_); }
+
+            private:
+                Matrix& ref_;
+                int row_index_;
+                int col_index_;
+                const int row_;
+                const int col_;
+        };
+
+         Iterator begin() {
+         //   cout << "first matrix value: " << matrix_(0)(0) << " begin() at -> " << &matrix_ << endl;
+            return Iterator(*this, false);
+        }
+
+        Iterator end() {
+         //   cout << "last matrix value: " << matrix_(col_-1)(row_-1) << " end() at -> " << &matrix_[row_-1] << endl;
+            return Iterator(*this, true);
+        }
+
+
+        class const_Iterator {
+            public:
+                const_Iterator(const Matrix& ref, bool is_end) : ref_(ref), row_index_(is_end? row-1 : 0), col_index_(is_end? column: 0), row_(row),  col_(column) {}
+                bool operator==(const const_Iterator& other) { return (&ref_ == &other.ref_) && (row_index_ == other.row_index_) && (col_index_ == other.col_index_); }
+                bool operator!=(const const_Iterator& other) { return !(*this == other); }
+
+                const_Iterator& operator++(int) {
+                    if(row_index_ <  row_-1 && col_index_ < col_-1)  { col_index_++; return *this; }
+                    if(row_index_ <  row_-1 && col_index_ == col_-1) { col_index_ = 0; row_index_++; return *this; }
+                    col_index_++;
+                    return *this;
+                }
+                const_Iterator& operator++() { return (*this)++; }
+                const Type& operator*() { return ref_(row_index_, col_index_); }
+
+            private:
+                const Matrix& ref_;
+                int row_index_;
+                int col_index_;
+                const int row_;
+                const int col_;
+        };
+
+         const_Iterator begin() const {
+         //   cout << "first matrix value: " << matrix_(0)(0) << " begin() at -> " << &matrix_ << endl;
+            return const_Iterator(*this, false);
+        }
+
+        const_Iterator end() const {
+         //   cout << "last matrix value: " << matrix_(col_-1)(row_-1) << " end() at -> " << &matrix_[row_-1] << endl;
+            return const_Iterator(*this, true);
+        }
+
+// ------------------------------------------------- private -------------------------------------------------------------------------------
 
     private:
         const int row_;
@@ -107,7 +207,7 @@ Matrix<Type, row, column>& Matrix<Type, row, column>::operator *=(const Matrix<T
 
 // ***************************************************** implementation of none member functions *****************************************************************************
 
-
+/*
 template <typename Type, int row, int column>
 std::ostream& operator <<(std::ostream& os, const Matrix<Type, row, column>& mat) {
     os << endl << "matrix operator << this is matix (vector<vector<Type>>) = " << endl;
@@ -119,6 +219,20 @@ std::ostream& operator <<(std::ostream& os, const Matrix<Type, row, column>& mat
     }
     os << "matrix address: " << &mat << endl;
 
+    return os;
+}
+
+*/
+
+template <typename Type, int row, int column>
+std::ostream& operator <<(std::ostream& os, const Matrix<Type, row, column>& mat) {
+    int col = 0;
+    os << endl;
+    for(auto& it : mat) {
+        os << it << " ";
+        if(++col == column) {os << endl; col = 0;}
+    }
+    os << endl;
     return os;
 }
 
@@ -226,7 +340,6 @@ Matrix<Type, row, column>&& operator +(const Matrix<Type, row, column>& mat1, co
     return (&this->matrix_ == &other.matrix_) && (row_ == other.row_) && (col_ == other.col_);
 }
 */
-
 
 
 #endif // MATRIX_H
