@@ -14,6 +14,7 @@ void GoDown();
 
 
 int main () {
+
     const Matrix<int, 3, 2> m1(7); // Creates 3*2 matrix, with all the default elements set to 0;
     cout << m1 << endl;
     Matrix<int, 3, 3> m2(4); // Creates 3*3 matrix, with the default elements equals to 4;
@@ -74,27 +75,6 @@ int main () {
 
     Matrix<int, 3, 3> mv1(4);
     cout << endl << "printing iterator to Matrix object vector<int> auto code: " << endl;
-//    for(auto &it2 : mv1.get_vector()){
-//        cout << it2 << " at -> " << &it2 << endl;
-//    }
-
-/*
-    cout << endl << "printing iterator to Matrix object vector<int> manual code: " << endl;
-    try {
-        vector<int>::iterator temp = mv1.begin();
-        cout << *temp << " main() begin() at -> " << &(*temp) << endl;
-
-        vector<int>::iterator temp2 = mv1.end();
-        cout << *temp2 << " main() end() at -> " << &(*temp2) << endl;
-    }
-    catch(const std::exception& e) { cerr << e.what() << endl; }
-
-    for(vector<int>::iterator temp3 = mv1.begin() ; temp3 != mv1.end(); ++temp3){
-        cout << *temp3 << " at -> " << &(*temp3) << endl;
-    }
-
-*/    cout << endl << "printing iterator to Matrix object vector<int> auto code: " << endl;
-  //  vector<int>::iterator it2_7 = mv1.begin();   cout << &it2_7 << endl;
     auto it2_6 = begin(mv1);  cout << &(*it2_6) << endl;
     auto it2_2 = mv1.begin(); cout << &(*it2_2) << endl;
 
@@ -104,12 +84,8 @@ int main () {
     mv2(2,2) = 6;
     mv2(2,0) = 7;
 
-//    for(auto &it_mv2_1 : mv2){
-//        for(auto &it_mv2_2 : it_mv2_1){
-//            cout << "mv2: " << it_mv2_2 << " at -> " << &it_mv2_2 << endl;
-//        }
-//    }
-    for(auto& it2_5 : mv1){
+
+   for(auto& it2_5 : mv1){
         cout << &it2_5 << " at -> " << &(it2_5) << endl;
     }
 
@@ -155,10 +131,11 @@ int main () {
 
     cout << "m1 = " << m1 << " before deleting at -> " << &(m1) << endl;
 
-/*    for(auto &it_m1 : m1){
+    for(auto &it_m1 : m1){
         cout << "m1 = " << &it_m1 << " at -> " << &(it_m1) << endl;
     }
- */   for(auto &it_m2 : m2){
+
+   for(auto &it_m2 : m2){
         cout << "m2 = " << &it_m2 << " at -> " << &(it_m2) << endl;
       //  &it_m2 = 45;
     }
@@ -216,15 +193,32 @@ int main () {
     cout << m5 << endl;
 
     if (m7 != m5)
-      cout << "m7 != m5" << endl;
+        cout << "m7 != m5" << endl;
 
-    Matrix<Matrix<int, 3, 3>, 4, 4> composite(m5); // Creates matrix, where each element is m1;
+
+
+
+
+
+
 
     GoDown();
-    cout << "this is m1: " << m5 << endl;
-    cout << "----------------------------------------" << endl;
+    cout << "------------------ composite ----------------------" << endl;
+    Matrix<Matrix<int, 3, 3>, 4, 4> composite(m5); // Creates matrix, where each element is m5;
+    cout << "this is m5: " << m5 << endl;
     cout << composite;
+    cout << composite(3,3);
+
     GoDown();
+
+
+
+
+
+
+
+
+
 
 
     unique_ptr<Matrix<int, 3, 3>> symetric_matrix(new Symetric_Matrix<int, 3>(5)); // SymetricMatrix matrix 3*3 with default element equals to 5;
@@ -298,16 +292,49 @@ int main () {
     for(auto& it : tm3(0)) {
         cout << "tm3[1][it] print :" << it << " at address: " << &it << endl;
     }
-/*
+
     for(typename Matrix<int,3,3>::Iterator it = tm3.begin(); it != tm3.end(); it++) {
         cout << "tm3[it] print :" << *it << " at address: " << &it << endl;
     }
-*/
+
     for(auto& it : tm3) {
         cout << "tm3[it] print :" << it << " at address: " << &it << endl;
     }
 
 //--------------------------------------- end  ----------------------------------------------------
+
+    GoDown();
+
+    Matrix<int, 3, 3> tm4(12);
+    cout << "tm4[1] print :" << endl;
+    cout << tm4 << endl;
+
+    int temp = 1;
+    for(auto& it : tm4(1)) {
+        it = temp++;
+        cout << it << endl;
+    }
+    cout << tm4 << endl;
+
+    for(auto& it : tm4) {
+        cout << it << " at address: " << &it << endl;
+    }
+        GoDown();
+
+    for(Matrix<int, 3,3>::Iterator it = tm4.begin(); it != tm4.end(); ++it) {
+        cout << *it << " at address: " << &*it << endl;
+    }
+
+//--------------------------------------- end  ----------------------------------------------------
+    Matrix<int, 3, 3> tm5 = tm4;
+    cout << "tm5 == tm4" << (tm5 == tm4 ? " true " : " false ") << endl;
+
+
+
+//--------------------------------------- end  ----------------------------------------------------
+
+
+
 
     return 0;
 }
